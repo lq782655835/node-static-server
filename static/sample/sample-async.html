@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>微信Js API Demo：async=true</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="dns-prefetch" href="http://mmbiz.qpic.cn">
+        <link rel="dns-prefetch" href="http://res.wx.qq.com">
+        <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0;">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <style type="text/css">
+            p {
+                padding: 5px 10px;
+            }
+        </style>
+        <script type="text/javascript" src="../WeixinApi.js?v=4.3"></script>
+    </head>
+    <body>
+        <p>这是一个测试页面！请直接分享到微信好友、朋友圈、腾讯微博看效果吧！（async为true，即：分享过程中，wxData会被动态修改）</p>
+
+        <p>
+            <a href="?" id="refresh">点击这里刷新！！！！</a>
+        </p>
+
+        <script type="text/javascript">
+/**
+ * 微信分享
+ */
+(function(){
+    if (document.addEventListener) {
+        document.addEventListener("WeixinJSBridgeReady", WXReadyFn, false)
+    } else if (document.attachEvent) {
+        document.attachEvent("WeixinJSBridgeReady", WXReadyFn)
+        document.attachEvent("onWeixinJSBridgeReady", WXReadyFn)
+    }
+
+    function WXReadyFn() {
+        shareTimeline()
+        shareAppMessage()
+    }
+
+    function shareTimeline() {
+        WeixinJSBridge.on('menu:share:timeline', function(argv){
+            WeixinJSBridge.invoke('shareTimeline',{
+                // "appid":"wxaa2baed276738013", //appid 设置空就好了。
+                "img_url": 'http://sight.netease.com/_nuxt/img/logo.ce400fb.png',
+                "img_width": 55,
+                "img_height": 55,
+                "link": 'http://sight.netease.com/',
+                "desc": 'AI智能语音转写听翻平台',
+                "title": '网易见外'
+            }, function(e){
+                alert(e.err_msg)
+            })
+        })
+    }
+
+    function shareAppMessage() {
+        WeixinJSBridge.on("menu:share:appmessage", function() {
+            WeixinJSBridge.invoke("sendAppMessage", {
+                // "appid": '',
+                "img_url": 'http://sight.netease.com/_nuxt/img/logo.ce400fb.png',
+                "img_width": 55,
+                "img_height": 55,
+                "link": 'http://sight.netease.com/',
+                "desc": 'AI智能语音转写听翻平台',
+                "title": '网易见外'
+            }, function(e) {
+                alert(e.err_msg)
+            })
+        })
+    }
+
+})()
+
+        </script>
+    </body>
+</html>
