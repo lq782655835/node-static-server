@@ -65,8 +65,6 @@ var server = http.createServer(function(request, response) {
 
     var realPath = path.join("static", pathname);
 
-
-
     fs.exists(realPath, function (exists) {
 
         console.log( realPath + ' %d', exists ? 200 : 404 );
@@ -162,6 +160,28 @@ var server = http.createServer(function(request, response) {
 });
 
 var port = 8000;
-server.listen(port);
+// server层面监听
+// server.on('connection', e => console.log(e, 111)) // 每次请求连接时
+server.on('close', e => console.log(e, 111))
+server.on('error', err => { // 遇到server启动错误时触发，比如端口重名
+    switch (err.code) {
+        case 'EADDRINUSE':
+            console.error('\033[33mWARN:\033[90m Port \033[33m%d\033[90m is already in use.', err.port);
+            server.listen(err.port + 1, console.log('server listen on port %d', err.port + 1));
+            break;
+        default:
+            throw err;
+    }
+})
 
-console.log('server listen on port %d', port);
+// 当没有process没有监听uncaughtException事件时，默认遇到错误会直接退出nodejs程序
+// 如果注册了，手动权在开发者手上，不会自动退出process
+process.on('uncaughtException', err => { // 处理错误
+    console.error('There was an uncaught error', err, 1)
+    // process.exit(1) // 手动退出
+})
+
+server.listen(port, () => console.log('server listen on port %d', port));
+
+
+
